@@ -133,6 +133,8 @@
     </div>
     
     <div id="result"></div>
+    <div id="loading" style="display: none;">Loading...</div>
+
     
     <div class="suggested-trips">
         <div class="trip">
@@ -164,20 +166,28 @@
     
 
     <script>
-    const form = document.getElementById("weather-form");
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(form);
-        const response = await fetch("https://cycling-amsterdam-backend.onrender.com/checkweather", {
-            method: "POST",
-            body: formData
+        const form = document.getElementById("weather-form");
+        const resultDiv = document.getElementById("result");
+        const loadingDiv = document.getElementById("loading");
+        
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+        
+            resultDiv.innerText = "";         // Clear old result
+            loadingDiv.style.display = "block"; // Show loading animation
+        
+            const formData = new FormData(form);
+            const response = await fetch("https://cycling-amsterdam-backend.onrender.com/checkweather", {
+                method: "POST",
+                body: formData
+            });
+        
+            const data = await response.json();
+        
+            loadingDiv.style.display = "none";   // Hide loading when done
+            resultDiv.innerText = data.recommendation; // Show result
         });
-
-        const data = await response.json();
-        document.getElementById("result").innerText = data.recommendation;
-    });
-    </script>
+        </script>
+        
 </body>
 </html>
